@@ -26,6 +26,10 @@ struct sockaddr_in serv_addr;
 // host info
 struct hostent *he;
 
+int bytes;
+double input[17];
+//int i;
+
 void setup(void) {
     printf("Setting up socket...\n");
     // create socket for network communication
@@ -54,18 +58,21 @@ void setup(void) {
 }
 
 void MasterReceive(void) {
-    // buffer to hold received data
-    int bytes;
 
-    double poop[2];
+    int i;
 
-    if( (bytes = recv(sockfd, poop, sizeof(poop), 0)) == -1) {
+    if( (bytes = recv(sockfd, input, sizeof(input), 0)) == -1) {
         printf("Failed to receive bytes from server");
         exit(1);
     }
 
 
-    printf("Speed: %f       Angle: %f\n", poop[0], poop[1]);
+    printf("Speed: %f       Angle: %f\n", input[0], input[1]);
+    for(i = 2; i < 17; i++) {
+        if(input[i] != 0) {
+            printf("Button  %d  On\n", i);
+        }
+    }
     return;
 }
 
@@ -76,6 +83,6 @@ void main() {
 
     while(1) {
         MasterReceive();
-        usleep(1000);
+        usleep(500);
     }
 }

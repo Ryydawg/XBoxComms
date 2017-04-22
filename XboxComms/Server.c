@@ -1,5 +1,6 @@
 #include <stdio.h>
 #include <stdlib.h>
+#include <unistd.h>
 
 #include <fcntl.h>
 #include <linux/joystick.h>
@@ -15,16 +16,19 @@ JSBuffer LY = {{0,0,0,0,0}, 0, 0};
 
 double* drive;
 int* buttons;
-
-double** inputs;
+double inputs[17];
 
 void MasterSend(int fd) {
 
-    double poop[2];
-    poop[0] = *drive;
-    poop[1] = *(drive+1);
+    inputs[0] = *drive;
+    inputs[1] = *(drive+1);
+    for(int i = 2; i < 17; i++) {
+        inputs[i] = *(buttons+i-2);
+    }
 
-    if(send(fd, poop, sizeof(poop), 0) == -1 ) {
+    if(send(fd, inputs, sizeof(inputs), 0) == -1 ) {
+        free(drive);
+        free(buttons);
         perror("failed to send values");
     }
     return;
@@ -36,16 +40,8 @@ void main(void) {
     int sockfd;
     int newfd;
 
-    double speed;
-    double angle;
-
     drive = malloc(2 * sizeof(double));
     buttons = malloc(15 * sizeof(int));
-
-    inputs = malloc(2 * sizeof(double*));
-
-    *inputs = drive;
-    *(inputs + 1) = buttons;
 
 // SETUP
     printf("Performing xbox setup...\n");
@@ -62,12 +58,11 @@ void main(void) {
     while(1) {
         readInput(&xboxfd, &LX, &LY, drive, buttons);
 
-        speed = *drive;
-        angle = *(drive+1);
+        //printf("Speed %f            angle %f\n", *drive, *(drive+1));
 
         usleep(1000);
 
         MasterSend(newfd);
     }
-    
+    return;    
 }

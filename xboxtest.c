@@ -1,13 +1,14 @@
 #include <stdio.h>
 #include <stdlib.h>
-#include <netdb.h>
-#include <stdint.h>
-#include <sys/ioctl.h>
-#include <sys/stat.h>
+#include <unistd.h>
+//#include <netdb.h>
+//#include <stdint.h>
+//#include <sys/ioctl.h>
+//#include <sys/stat.h>
 #include <fcntl.h>
-#include <stddef.h>
-#include <sys/un.h>
-#include <signal.h>
+//#include <stddef.h>
+//#include <sys/un.h>
+//#include <signal.h>
 #include <linux/joystick.h>
 #include <math.h>
 
@@ -125,7 +126,7 @@ void main(void) {
 
         // Compute angle and direction
         angle = atan2(angleLY, angleLX) * 180.0 / PI;
-        dir = sqrt(angleLX*angleLX + angleLY*angleLY);
+        dir = sqrt(scaledLX*scaledLX + scaledLY * scaledLY);
 
 
 
