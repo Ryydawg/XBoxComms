@@ -10,8 +10,6 @@
 #include <sys/stat.h>
 #include <fcntl.h>
 #include <netdb.h>
-//#include "i2c-dev.h"
-//#include "i2cbusses.h"
 
 
 #define HOSTPORT 8000  // the port client will be connecting to
@@ -28,17 +26,11 @@ struct sockaddr_in serv_addr;
 // host info
 struct hostent *he;
 
-/**
- * Sets up socket communication with server
- */
 void setup(void) {
-
     printf("Setting up socket...\n");
-
     // create socket for network communication
     if( (sockfd=socket(AF_INET, SOCK_STREAM, 0)) == -1)
         printf("Failed to create socket.\n");
-
 
     // get the host info
     he = gethostbyname(hostname);
@@ -46,7 +38,6 @@ void setup(void) {
         printf("ERROR: No host\n");
         exit(1);
     }
-    
     // populate the server info
     serv_addr.sin_family = AF_INET;     // host byte order
     serv_addr.sin_port = htons(HOSTPORT);   // port # of host
@@ -54,37 +45,28 @@ void setup(void) {
     memset(&(serv_addr.sin_zero), '\0', 8);     // zero the rest of the struct
 
     printf("Setup complete.\nConnecting to host...\n");
-
-
     // try to connect
     if( connect(sockfd, (struct sockaddr *)&serv_addr, sizeof(struct sockaddr)) == -1) {
         printf("Failed to connect\n");
         return;
     }
-
     printf("Connected. Receiving bytes...\n");
-    
 }
 
-/**
- * Receives the data buffer from server,
- * parses it, and then prints out relevant
- * data
- */
 void MasterReceive(void) {
     // buffer to hold received data
     int bytes;
 
-    double speed;
+    double poop[2];
 
-    if( (bytes = recv(sockfd, &speed, sizeof(speed), 0)) == -1) {
+    if( (bytes = recv(sockfd, poop, sizeof(poop), 0)) == -1) {
         printf("Failed to receive bytes from server");
         exit(1);
     }
 
-    printf("Axis: %f\n", speed);
 
-
+    printf("Speed: %f       Angle: %f\n", poop[0], poop[1]);
+    return;
 }
 
 void main() {
@@ -94,5 +76,6 @@ void main() {
 
     while(1) {
         MasterReceive();
+        usleep(1000);
     }
 }
