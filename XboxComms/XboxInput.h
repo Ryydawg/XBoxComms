@@ -3,7 +3,6 @@
 
 typedef struct JSBuffer {
 	int vals[5];
-	int pos;
 	int average;
 } JSBuffer;
 

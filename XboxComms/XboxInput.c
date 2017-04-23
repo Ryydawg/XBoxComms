@@ -35,7 +35,6 @@ void push(JSBuffer *buff, int n) {
 	for(i = 0; i < 4; i++) {
 		buff->vals[i+1] = buff->vals[i];
 	}
-	// insert new value to front
 	buff->vals[0] = n
 
 	return;
@@ -47,14 +46,13 @@ void push(JSBuffer *buff, int n) {
  * in the array
  */
 int average(JSBuffer *buff) {
-	buff->average = (double)((buff->vals[0]) + 4*(buff->vals[1]) + 6*(buff->vals[2])
+	return (double)((buff->vals[0]) + 4*(buff->vals[1]) + 6*(buff->vals[2])
 					+ 4*(buff->vals[3]) + (buff->vals[4])) / 16.0;
-	return buff->average;
 }
 
 /**
  * Using the values of the average of LX and LY, computes the magnitude
- * and angle of the vector formed by the two points. Stores the magnitude
+ * and angle of the vector formed by the point. Stores the magnitude
  * and angle in the memory location drive and drive+1
  */
 void scaleVals(JSBuffer* LX, JSBuffer* LY, double* drive) {
@@ -101,11 +99,10 @@ void scaleVals(JSBuffer* LX, JSBuffer* LY, double* drive) {
 }
 
 /**
- * Reads the input of the xbox controller, storing the results in the given
- * memory locations.
+ * Reads the input of the xbox controller, storing the results
+ * to the given JSBuffers
  */
 void readInput(int* xboxfd, JSBuffer* LX, JSBuffer* LY, double* drive, int* buttons) {
-
 	int a = read(*xboxfd, &xbox, sizeof(xbox));
 
 	if(a == -1) {
