@@ -26,15 +26,17 @@ int angleLY = 0;
 
 /**
  * Takes in a JSBuffer struct and a value for the joystick position
- * Inserts the value into the JSBuffer, removing the last fifth element
+ * Pushes back all current values, popping out the last value, and
+ * inserting the new value to the top
  */
 void push(JSBuffer *buff, int n) {
-	buff->vals[buff->pos] = n;
-
-	if(buff->pos == 4)
-		buff->pos = 0;
-	else
-		buff->pos = buff->pos + 1;
+	// push back current values
+	int i;
+	for(i = 0; i < 4; i++) {
+		buff->vals[i+1] = buff->vals[i];
+	}
+	// insert new value to front
+	buff->vals[0] = n
 
 	return;
 }
