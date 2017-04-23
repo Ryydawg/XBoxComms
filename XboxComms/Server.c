@@ -36,7 +36,14 @@ void MasterSend(int fd) {
     return;
 }
 
-void main(void) {
+void main(int argc, char* argv[]) {
+    if(argc != 3) {
+        printf("Invalid number of inputs. Please follow the format:\n");
+        printf("\n./Server <xboxfd path> <portno>\n\n");
+        printf("where the xboxfd path is located at /dev/input/ and the\n");
+        printf("portno is the port number the connection will be made.\n");
+        return;
+    }
 
     int xboxfd;
     int sockfd;
@@ -47,11 +54,11 @@ void main(void) {
 
 // SETUP
     printf("Performing xbox setup...\n");
-    xbox_setup(&xboxfd);
+    xbox_setup(&xboxfd, argv[1]);
     printf("\nCompleted xbox setup\n");
 
     printf("\nPerforming connection setup...\n\n");
-    socket_setup(&sockfd, &newfd, &myaddr, &their_addr);
+    socket_setup(&sockfd, &newfd, &myaddr, &their_addr, argv[2]);
     printf("\nCompleted connection setup\n");
 // DONE SETUP
 

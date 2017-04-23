@@ -3,8 +3,8 @@
 
 #include <netdb.h>
 
-void xbox_setup(int* fd);
+void xbox_setup(int* fd, char* path);
 
-void socket_setup(int* sockfd, int* newfd, struct sockaddr_in* my_addr, struct sockaddr_in* their_addr);
+void socket_setup(int* sockfd, int* newfd, struct sockaddr_in* my_addr, struct sockaddr_in* their_addr, char* port);
 
 #endif

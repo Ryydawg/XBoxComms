@@ -17,12 +17,11 @@
 
 #include "Connections.h"
 
-#define MYPORT 8000
 #define BACKLOG 1
 
 // Opens the xbox controller file descriptor to read the controller input
-void xbox_setup(int* fd) {
-    *fd = open("/dev/input/js2", O_RDONLY | O_NONBLOCK);
+void xbox_setup(int* fd, char* path) {
+    *fd = open(path, O_RDONLY | O_NONBLOCK);
     if(*fd == -1) {
         perror("Could not find xbox controller at /dev/input/js2");
         exit(0);
@@ -38,9 +37,9 @@ void xbox_setup(int* fd) {
     return;
 }
 
-// Sets up a socket on a predefined port, then waits for a connection
+// Sets up a socket on the inputted port, then waits for a connection
 void socket_setup(int* sockfd, int* newfd, struct sockaddr_in* my_addr,
-											struct sockaddr_in* their_addr) {
+								struct sockaddr_in* their_addr, char* port) {
 	int yes = 1;
 
     // SOCKET SETUP
@@ -53,7 +52,7 @@ void socket_setup(int* sockfd, int* newfd, struct sockaddr_in* my_addr,
         exit(0);
     }
     my_addr->sin_family = AF_INET;           // set address family
-    my_addr->sin_port = htons(MYPORT);       // set port number
+    my_addr->sin_port = htons(atoi(port));       // set port number
     my_addr->sin_addr.s_addr = INADDR_ANY;   // autofill with my ip
     memset(&(my_addr->sin_zero), '\0', 8);   // zero the rest of the struct
 	
