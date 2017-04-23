@@ -20,6 +20,9 @@
 #define MYPORT 8000
 #define BACKLOG 1
 
+/**
+ * Opens the xbox controller file descriptor to enable reading of the input
+ */
 void xbox_setup(int* fd) {
     *fd = open("/dev/input/js2", O_RDONLY | O_NONBLOCK);
     if(*fd == -1) {
@@ -37,6 +40,9 @@ void xbox_setup(int* fd) {
     return;
 }
 
+/**
+ * Sets up a socket on a predefined port, then waits for a connection
+ */
 void socket_setup(int* sockfd, int* newfd, struct sockaddr_in* my_addr,
 											struct sockaddr_in* their_addr) {
 	int yes = 1;

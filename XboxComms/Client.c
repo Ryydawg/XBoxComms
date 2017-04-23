@@ -30,6 +30,10 @@ int bytes;
 double input[17];
 //int i;
 
+/**
+ * Sets up a socket on a predefined port, then connects to a predefined
+ * IP address
+ */
 void setup(void) {
     printf("Setting up socket...\n");
     // create socket for network communication
@@ -57,6 +61,9 @@ void setup(void) {
     printf("Connected. Receiving bytes...\n");
 }
 
+/**
+ * Gets the data from the connection then prints out the values
+ */
 void MasterReceive(void) {
 
     int i;

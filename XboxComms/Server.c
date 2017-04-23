@@ -18,6 +18,10 @@ double* drive;
 int* buttons;
 double inputs[17];
 
+
+/**
+ * Sends the data out
+ */
 void MasterSend(int fd) {
 
     inputs[0] = *drive;

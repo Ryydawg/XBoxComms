@@ -24,6 +24,10 @@ double scaledLY = 0.0;
 int angleLX = 0;
 int angleLY = 0;
 
+/**
+ * Takes in a JSBuffer struct and a value for the joystick position
+ * Inserts the value into the JSBuffer, removing the last fifth element
+ */
 void push(JSBuffer *buff, int n) {
 	buff->vals[buff->pos] = n;
 
@@ -35,12 +39,22 @@ void push(JSBuffer *buff, int n) {
 	return;
 }
 
+/**
+ * Computes the average of the values in the JSBuffer, with weights as
+ * follows: 1, 4, 6, 4, 1 with respect to the position of the values
+ * in the array
+ */
 int average(JSBuffer *buff) {
 	buff->average = (double)((buff->vals[0]) + 4*(buff->vals[1]) + 6*(buff->vals[2])
 					+ 4*(buff->vals[3]) + (buff->vals[4])) / 16.0;
 	return buff->average;
 }
 
+/**
+ * Using the values of the average of LX and LY, computes the magnitude
+ * and angle of the vector formed by the two points. Stores the magnitude
+ * and angle in the memory location drive and drive+1
+ */
 void scaleVals(JSBuffer* LX, JSBuffer* LY, double* drive) {
 	push(LX, lastLX);
 	push(LY, lastLY);
@@ -84,6 +98,10 @@ void scaleVals(JSBuffer* LX, JSBuffer* LY, double* drive) {
 	return;
 }
 
+/**
+ * Reads the input of the xbox controller, storing the results in the given
+ * memory locations.
+ */
 void readInput(int* xboxfd, JSBuffer* LX, JSBuffer* LY, double* drive, int* buttons) {
 
 	int a = read(*xboxfd, &xbox, sizeof(xbox));
