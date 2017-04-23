@@ -11,22 +11,20 @@
 struct sockaddr_in myaddr;
 struct sockaddr_in their_addr;
 
-JSBuffer LX = {{0,0,0,0,0}, 0, 0};
-JSBuffer LY = {{0,0,0,0,0}, 0, 0};
+JSBuffer LX = {{0,0,0,0,0}};
+JSBuffer LY = {{0,0,0,0,0}};
 
 double* drive;
 int* buttons;
 double inputs[17];
 
-
-/**
- * Sends the data out
- */
+// Sends the data out
 void MasterSend(int fd) {
+    int i;
 
     inputs[0] = *drive;
     inputs[1] = *(drive+1);
-    for(int i = 2; i < 17; i++) {
+    for(i = 2; i < 17; i++) {
         inputs[i] = *(buttons+i-2);
     }
 
@@ -57,13 +55,9 @@ void main(void) {
     printf("\nCompleted connection setup\n");
 // DONE SETUP
 
-
     printf("\n\nReading input\n");
     while(1) {
         readInput(&xboxfd, &LX, &LY, drive, buttons);
-
-        //printf("Speed %f            angle %f\n", *drive, *(drive+1));
-
         usleep(1000);
 
         MasterSend(newfd);

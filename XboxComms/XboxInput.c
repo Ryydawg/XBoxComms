@@ -24,38 +24,34 @@ double scaledLY = 0.0;
 int angleLX = 0;
 int angleLY = 0;
 
-/**
- * Takes in a JSBuffer struct and a value for the joystick position
- * Pushes back all current values, popping out the last value, and
- * inserting the new value to the top
- */
+// Pushes back all current values, pops out the last value, and
+// inserts the new value to the front
 void push(JSBuffer *buff, int n) {
 	// push back current values
 	int i;
 	for(i = 0; i < 4; i++) {
 		buff->vals[i+1] = buff->vals[i];
 	}
-	buff->vals[0] = n
+	buff->vals[0] = n;
 
 	return;
 }
 
-/**
- * Computes the average of the values in the JSBuffer, with weights as
- * follows: 1, 4, 6, 4, 1 with respect to the position of the values
- * in the array
- */
+// Computes the average of the values in the JSBuffer, with weights as
+// follows: 1, 4, 6, 4, 1 with respect to the position of the values
+// in the array
 int average(JSBuffer *buff) {
 	return (double)((buff->vals[0]) + 4*(buff->vals[1]) + 6*(buff->vals[2])
 					+ 4*(buff->vals[3]) + (buff->vals[4])) / 16.0;
 }
 
-/**
- * Using the values of the average of LX and LY, computes the magnitude
- * and angle of the vector formed by the point. Stores the magnitude
- * and angle in the memory location drive and drive+1
- */
+// Using the values of the average of LX and LY, computes the magnitude
+// and angle of the vector formed by the point. Stores the magnitude
+// and angle in the memory location drive and drive+1
 void scaleVals(JSBuffer* LX, JSBuffer* LY, double* drive) {
+
+	double speed;
+
 	push(LX, lastLX);
 	push(LY, lastLY);
 
@@ -89,19 +85,17 @@ void scaleVals(JSBuffer* LX, JSBuffer* LY, double* drive) {
 		angleLY = 0;
 	}
 
-	double speed = sqrt(scaledLX*scaledLX + scaledLY*scaledLY);
-	if(speed > 1.0) { *drive = 1.0; }
-	else { *drive = speed; }
+	speed = sqrt(scaledLX*scaledLX + scaledLY*scaledLY);
+	if(speed > 1.0) *drive = 1.0;
+	else *drive = speed;
 
 	*(drive+1) = atan2(angleLY, angleLX) * 180.0 / PI;
 
 	return;
 }
 
-/**
- * Reads the input of the xbox controller, storing the results
- * to the given JSBuffers
- */
+// Reads the input of the xbox controller, storing the results
+// to the given JSBuffers
 void readInput(int* xboxfd, JSBuffer* LX, JSBuffer* LY, double* drive, int* buttons) {
 	int a = read(*xboxfd, &xbox, sizeof(xbox));
 

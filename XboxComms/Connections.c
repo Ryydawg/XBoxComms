@@ -20,16 +20,14 @@
 #define MYPORT 8000
 #define BACKLOG 1
 
-/**
- * Opens the xbox controller file descriptor to enable reading of the input
- */
+// Opens the xbox controller file descriptor to read the controller input
 void xbox_setup(int* fd) {
     *fd = open("/dev/input/js2", O_RDONLY | O_NONBLOCK);
     if(*fd == -1) {
         perror("Could not find xbox controller at /dev/input/js2");
         exit(0);
     }
-
+    // Prints details of the controller
     int axes=0, buttons=0;
     char name[128];
     ioctl(*fd, JSIOCGAXES, &axes);
@@ -40,9 +38,7 @@ void xbox_setup(int* fd) {
     return;
 }
 
-/**
- * Sets up a socket on a predefined port, then waits for a connection
- */
+// Sets up a socket on a predefined port, then waits for a connection
 void socket_setup(int* sockfd, int* newfd, struct sockaddr_in* my_addr,
 											struct sockaddr_in* their_addr) {
 	int yes = 1;
@@ -61,7 +57,7 @@ void socket_setup(int* sockfd, int* newfd, struct sockaddr_in* my_addr,
     my_addr->sin_addr.s_addr = INADDR_ANY;   // autofill with my ip
     memset(&(my_addr->sin_zero), '\0', 8);   // zero the rest of the struct
 	
-    printf("Setup Complete. Binding socket...\n");
+    printf("Socket created. Binding socket...\n");
 
     // bind the listen socket to my address information
     if(bind(*sockfd,(struct sockaddr*)my_addr,sizeof(struct sockaddr)) == -1) {

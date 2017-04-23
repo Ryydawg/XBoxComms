@@ -1,9 +1,11 @@
 #ifndef XBOXINPUT_H_
 #define XBOXINPUT_H_
 
+// Holds five values corresponding to the joystick position
+// with the most recent value at the front and the least recent
+// at the back.
 typedef struct JSBuffer {
 	int vals[5];
-	int average;
 } JSBuffer;
 
 void push(JSBuffer *buff, int n);
