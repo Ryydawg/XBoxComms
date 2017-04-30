@@ -26,13 +26,13 @@ int angleLY = 0;
 
 // Pushes back all current values, pops out the last value, and
 // inserts the new value to the front
-void push(JSBuffer *buff, int n) {
+void push(int buff[], int n) {
 	// push back current values
 	int i;
 	for(i = 0; i < 4; i++) {
-		buff->vals[i+1] = buff->vals[i];
+		buff[i+1] = buff[i];
 	}
-	buff->vals[0] = n;
+	buff[0] = n;
 
 	return;
 }
@@ -40,15 +40,15 @@ void push(JSBuffer *buff, int n) {
 // Computes the average of the values in the JSBuffer, with weights as
 // follows: 1, 4, 6, 4, 1 with respect to the position of the values
 // in the array
-int average(JSBuffer *buff) {
-	return (double)((buff->vals[0]) + 4*(buff->vals[1]) + 6*(buff->vals[2])
-					+ 4*(buff->vals[3]) + (buff->vals[4])) / 16.0;
+int average(int buff[]) {
+	return (double)((buff[0]) + 4*(buff[1]) + 6*(buff[2])
+					+ 4*(buff[3]) + (buff[4])) / 16.0;
 }
 
 // Using the values of the average of LX and LY, computes the magnitude
 // and angle of the vector formed by the point. Stores the magnitude
 // and angle in the memory location drive and drive+1
-void scaleVals(JSBuffer* LX, JSBuffer* LY, double* drive) {
+void scaleVals(int LX[], int LY[], double* drive) {
 
 	double speed;
 
@@ -96,7 +96,7 @@ void scaleVals(JSBuffer* LX, JSBuffer* LY, double* drive) {
 
 // Reads the input of the xbox controller, storing the results
 // to the given JSBuffers
-void readInput(int* xboxfd, JSBuffer* LX, JSBuffer* LY, double* drive, int* buttons) {
+void readInput(int* xboxfd, int LX[], int LY[], double* drive, int* buttons) {
 	int a = read(*xboxfd, &xbox, sizeof(xbox));
 
 	if(a == -1) {

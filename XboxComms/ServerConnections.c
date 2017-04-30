@@ -22,6 +22,10 @@
 // Opens the xbox controller file descriptor to read the controller input
 void xbox_setup(int* fd, char* path) {
     *fd = open(path, O_RDONLY | O_NONBLOCK);
+
+
+
+
     if(*fd == -1) {
         perror("Could not find xbox controller at /dev/input/js2");
         exit(0);
@@ -73,7 +77,7 @@ void server_socket_setup(int* sockfd, int* newfd, struct sockaddr_in* my_addr,
     }
 
     // accept connection
-    int sin_size = sizeof(struct sockaddr_in);
+    unsigned int sin_size = sizeof(struct sockaddr_in);
     if((*newfd = accept(*sockfd,(struct sockaddr*)their_addr,&sin_size)) == -1) {
         perror("accept");
     }

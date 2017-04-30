@@ -30,13 +30,13 @@ void MasterSend(int fd) {
     return;
 }
 
-void main(int argc, char* argv[]) {
+int main(int argc, char* argv[]) {
     if(argc != 3) {
         printf("Invalid number of inputs. Please follow the format:\n");
         printf("\n./Server <xboxfd path> <portno>\n\n");
         printf("where the xboxfd path is located at /dev/input/ and the\n");
         printf("portno is the port number the connection will be made.\n");
-        return;
+        return -1;
     }
 
     int xboxfd;
@@ -45,11 +45,11 @@ void main(int argc, char* argv[]) {
     struct sockaddr_in myaddr;
     struct sockaddr_in their_addr;
 
-    JSBuffer LX = {{0,0,0,0,0}};
-    JSBuffer LY = {{0,0,0,0,0}};
+    int LX[] = {0,0,0,0,0};
+    int LY[] = {0,0,0,0,0};
 
-    drive = malloc(2 * sizeof(double));
-    buttons = malloc(15 * sizeof(int));
+    drive = (double*)malloc(2 * sizeof(double));
+    buttons = (int*)malloc(15 * sizeof(int));
 
 // SETUP
     printf("Performing xbox setup...\n");
@@ -63,10 +63,10 @@ void main(int argc, char* argv[]) {
 
     printf("\n\nReading input\n");
     while(1) {
-        readInput(&xboxfd, &LX, &LY, drive, buttons);
+        readInput(&xboxfd, LX, LY, drive, buttons);
         usleep(1000);
 
         MasterSend(newfd);
     }
-    return;    
+    return 1;;    
 }

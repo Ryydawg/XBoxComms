@@ -1,19 +1,21 @@
+#ifdef __cplusplus
+extern "C" {
+#endif
+
+
 #ifndef XBOXINPUT_H_
 #define XBOXINPUT_H_
 
-// Holds five values corresponding to the joystick position
-// with the most recent value at the front and the least recent
-// at the back.
-typedef struct JSBuffer {
-	int vals[5];
-} JSBuffer;
+void push(int buff[], int n);
 
-void push(JSBuffer *buff, int n);
+int average(int buff[]);
 
-int average(JSBuffer *buff);
+void scaleVals(int LX[], int LY[], double* drive);
 
-void scaleVals(JSBuffer* LX, JSBuffer* LY, double* drive);
+void readInput(int* xboxfd, int LX[], int LY[], double* drive, int* buttons);
 
-void readInput(int* xboxfd, JSBuffer* LX, JSBuffer* LY, double* drive, int* buttons);
+#endif
 
+#ifdef __cplusplus
+}
 #endif

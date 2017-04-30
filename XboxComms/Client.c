@@ -44,13 +44,13 @@ void MasterReceive(int sockfd) {
     return;
 }
 
-void main(int argc, char* argv[]) {
+int main(int argc, char* argv[]) {
     if(argc != 3) {
         printf("Invalid number of inputs. Please follow the format:\n");
         printf("\n./Server <IP address> <portno>\n\n");
         printf("where the IP address is the IP of the host and the\n");
         printf("portno is the port number the connection will be made.\n");
-        return;
+        return -1;
     }
 
     int sockfd;
@@ -70,4 +70,6 @@ void main(int argc, char* argv[]) {
         MasterReceive(sockfd);
         usleep(500);
     }
+
+    return 1;
 }
