@@ -2,7 +2,6 @@
 extern "C" {
 #endif
 
-
 #ifndef XBOXINPUT_H_
 #define XBOXINPUT_H_
 

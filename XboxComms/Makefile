@@ -1,6 +1,6 @@
 # Programs
 
-CC = g++
+CC = gcc
 
 all:    Client Server
 
