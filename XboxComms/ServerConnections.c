@@ -15,7 +15,7 @@
 
 #include <linux/joystick.h>
 
-#include "Connections.h"
+#include "ServerConnections.h"
 
 #define BACKLOG 1
 
@@ -38,7 +38,7 @@ void xbox_setup(int* fd, char* path) {
 }
 
 // Sets up a socket on the inputted port, then waits for a connection
-void socket_setup(int* sockfd, int* newfd, struct sockaddr_in* my_addr,
+void server_socket_setup(int* sockfd, int* newfd, struct sockaddr_in* my_addr,
 								struct sockaddr_in* their_addr, char* port) {
 	int yes = 1;
 

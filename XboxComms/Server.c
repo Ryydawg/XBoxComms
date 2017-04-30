@@ -5,14 +5,8 @@
 #include <fcntl.h>
 #include <linux/joystick.h>
 
-#include "Connections.h"
+#include "ServerConnections.h"
 #include "XboxInput.h"
-
-struct sockaddr_in myaddr;
-struct sockaddr_in their_addr;
-
-JSBuffer LX = {{0,0,0,0,0}};
-JSBuffer LY = {{0,0,0,0,0}};
 
 double* drive;
 int* buttons;
@@ -48,6 +42,11 @@ void main(int argc, char* argv[]) {
     int xboxfd;
     int sockfd;
     int newfd;
+    struct sockaddr_in myaddr;
+    struct sockaddr_in their_addr;
+
+    JSBuffer LX = {{0,0,0,0,0}};
+    JSBuffer LY = {{0,0,0,0,0}};
 
     drive = malloc(2 * sizeof(double));
     buttons = malloc(15 * sizeof(int));
@@ -58,7 +57,7 @@ void main(int argc, char* argv[]) {
     printf("\nCompleted xbox setup\n");
 
     printf("\nPerforming connection setup...\n\n");
-    socket_setup(&sockfd, &newfd, &myaddr, &their_addr, argv[2]);
+    server_socket_setup(&sockfd, &newfd, &myaddr, &their_addr, argv[2]);
     printf("\nCompleted connection setup\n");
 // DONE SETUP
 
