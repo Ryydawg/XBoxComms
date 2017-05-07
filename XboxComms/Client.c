@@ -11,7 +11,7 @@
 #include <fcntl.h>
 #include <netdb.h>
 
-#include "ClientConnections.h"
+#include "Connections.h"
 
 double input[17];
 
@@ -34,14 +34,17 @@ void MasterReceive(int sockfd) {
     if(input[15]) printf("moving up\n");
     if(input[16]) printf("moving down\n");
 
-/*
+    /*
     for(i = 2; i < 17; i++) {
         if(input[i] != 0) {
             printf("Button  %d  On\n", i);
         }
     }
     */
-    return;
+}
+
+void MasterSend(int fd) {
+    
 }
 
 int main(int argc, char* argv[]) {
@@ -53,23 +56,46 @@ int main(int argc, char* argv[]) {
         return -1;
     }
 
+    // Vars for recv xbox input
     int sockfd;
     struct sockaddr_in serv_addr;
-    struct hostent *he;
+    // Vars for sending to host
+    int sendfd;
+    int newfd;
+    struct sockaddr_in myaddr;
+    struct sockaddr_in their_addr;
 
 
+    // Create a socket connection for receiving Xbox input
+    printf("Creating client socket...\n");
+    ClientSocket(argv[1], argv[2], &sockfd, &serv_addr);
+    printf("Created.\n");
+
+    printf("\nConnecting to host...\n");
+    while(1) {
+        if(ConnectToHost(&sockfd, &serv_addr) == -1) {
+            perror("ERROR: Failed to connect");
+        } else break;
+    }
+    printf("Connected!\n");
+    
+
+    // Create a socket connection for sending data back to host
+    printf("\nCreating socket to send data back...\n");
+    HostSocket("8020", &sendfd, &myaddr);
+    printf("Created.\n");
+
+    printf("\nListening for connection...\n");
+    ListenForConn(&sendfd, &newfd, &their_addr);
+    printf("Connected!\n");
 
 
-    // set up socket communication
-    printf("Setting up socket...\n");
-    client_socket_setup(argv[1], argv[2], &sockfd, &serv_addr, he);
-    printf("\nSetup Complete. Receiving bytes...\n");
 
     // read sent data
+    printf("\n\nReceiving bytes...\n");
     while(1) {
-        MasterReceive(sockfd);
-        usleep(500);
+        //MasterReceive(sockfd);
+        //usleep(500);
     }
-
-    return 1;
+    return 0;
 }

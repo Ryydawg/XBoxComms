@@ -24,6 +24,24 @@ double scaledLY = 0.0;
 int angleLX = 0;
 int angleLY = 0;
 
+// Opens the xbox controller file descriptor to read the controller input
+void xbox_setup(int* fd, char* path) {
+    *fd = open(path, O_RDONLY | O_NONBLOCK);
+
+    // The rest is for the user
+    if(*fd == -1) {
+        perror("Could not find xbox controller at /dev/input/js2");
+        exit(0);
+    }
+    // Prints details of the controller
+    int axes=0, buttons=0;
+    char name[128];
+    ioctl(*fd, JSIOCGAXES, &axes);
+    ioctl(*fd, JSIOCGBUTTONS, &buttons);
+    ioctl(*fd, JSIOCGNAME(sizeof(name)), &name);
+    printf("\n%s\n    %d Axes %d Buttons\n", name, axes, buttons);
+}
+
 // Pushes back all current values, pops out the last value, and
 // inserts the new value to the front
 void push(int buff[], int n) {
@@ -33,8 +51,6 @@ void push(int buff[], int n) {
 		buff[i+1] = buff[i];
 	}
 	buff[0] = n;
-
-	return;
 }
 
 // Computes the average of the values in the JSBuffer, with weights as
@@ -90,8 +106,6 @@ void scaleVals(int LX[], int LY[], double* drive) {
 	else *drive = speed;
 
 	*(drive+1) = atan2(angleLY, angleLX) * 180.0 / PI;
-
-	return;
 }
 
 // Reads the input of the xbox controller, storing the results
@@ -114,5 +128,4 @@ void readInput(int* xboxfd, int LX[], int LY[], double* drive, int* buttons) {
 	}
 
 	scaleVals(LX, LY, drive);
-	return;
 }

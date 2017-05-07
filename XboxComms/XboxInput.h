@@ -2,8 +2,10 @@
 extern "C" {
 #endif
 
-#ifndef XBOXINPUT_H_
-#define XBOXINPUT_H_
+#ifndef XBOXINPUT_H
+#define XBOXINPUT_H
+
+void xbox_setup(int* fd, char* path);
 
 void push(int buff[], int n);
 

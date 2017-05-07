@@ -5,7 +5,7 @@
 #include <fcntl.h>
 #include <linux/joystick.h>
 
-#include "ServerConnections.h"
+#include "Connections.h"
 #include "XboxInput.h"
 
 double* drive;
@@ -31,16 +31,18 @@ void MasterSend(int fd) {
 }
 
 int main(int argc, char* argv[]) {
-    if(argc != 3) {
+    if(argc != 4) {
         printf("Invalid number of inputs. Please follow the format:\n");
-        printf("\n./Server <xboxfd path> <portno>\n\n");
+        printf("\n./Server <xboxfd path> <portno> <IP>\n\n");
         printf("where the xboxfd path is located at /dev/input/ and the\n");
-        printf("portno is the port number the connection will be made.\n");
+        printf("portno is the port number the connection will be made\n");
+        printf("and IP is the address of the client.\n");
         return -1;
     }
 
+    // Vars for sending xbox input
     int xboxfd;
-    int sockfd;
+    int hostfd;
     int newfd;
     struct sockaddr_in myaddr;
     struct sockaddr_in their_addr;
@@ -51,22 +53,51 @@ int main(int argc, char* argv[]) {
     drive = (double*)malloc(2 * sizeof(double));
     buttons = (int*)malloc(15 * sizeof(int));
 
-// SETUP
-    printf("Performing xbox setup...\n");
-    xbox_setup(&xboxfd, argv[1]);
-    printf("\nCompleted xbox setup\n");
+    // Vars for recv client data
+    int clientfd;
+    struct sockaddr_in client_addr;
 
-    printf("\nPerforming connection setup...\n\n");
-    server_socket_setup(&sockfd, &newfd, &myaddr, &their_addr, argv[2]);
-    printf("\nCompleted connection setup\n");
-// DONE SETUP
+
+    printf("Performing xbox setup...\n");
+    //xbox_setup(&xboxfd, argv[1]);
+    printf("Completed xbox setup\n");
+
+    // Create socket connection for sending Xbox input
+    printf("\nCreating host socket...\n");
+    HostSocket(argv[2], &hostfd, &myaddr);
+    printf("Created.\n");
+
+    // LISTEN FOR CONNECTION
+    printf("\nListening for a connection...\n");
+    ListenForConn(&hostfd, &newfd, &their_addr);
+
+    usleep(2500000);
+
+    // Create a socket connection for receiving data from client
+    printf("Creating client socket...\n");
+    ClientSocket(argv[3], "8020", &clientfd, &client_addr);
+    printf("Created.\n");
+
+    printf("\nConnecting to host...\n");
+    while(1) {
+        if(ConnectToHost(&clientfd, &client_addr) == -1) {
+            perror("ERROR: Failed to connect");
+        } else break;
+    }
+    printf("Connected!\n");
+
+
 
     printf("\n\nReading input\n");
     while(1) {
-        readInput(&xboxfd, LX, LY, drive, buttons);
-        usleep(1000);
 
-        MasterSend(newfd);
+
+        //readInput(&xboxfd, LX, LY, drive, buttons);
+
+        
+        //usleep(1000);
+
+        //MasterSend(newfd);
     }
-    return 1;;    
+    return 0;
 }
