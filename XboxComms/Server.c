@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <unistd.h>
+#include <string.h>
 
 #include <fcntl.h>
 #include <linux/joystick.h>
@@ -11,9 +12,22 @@
 double* drive;
 int* buttons;
 double inputs[17];
+char* string;
+
+void MasterReceive(int fd) {
+    int bytes;
+    char buffer[512];
+
+    if( (bytes=recv(fd, buffer, sizeof(buffer), 0)) == -1) {
+        perror("failed to receive bytes from server");
+    }
+
+
+    printf("Received: %d\n", bytes);
+}
 
 // Sends the data out
-void MasterSend(int fd) {
+void MasterSend(int fd) {}
     int i;
 
     inputs[0] = *drive;
@@ -28,15 +42,17 @@ void MasterSend(int fd) {
         perror("failed to send values");
     }
     return;
+    //MasterReceive(fd);
 }
 
+
+
 int main(int argc, char* argv[]) {
-    if(argc != 4) {
+    if(argc != 3) {
         printf("Invalid number of inputs. Please follow the format:\n");
-        printf("\n./Server <xboxfd path> <portno> <IP>\n\n");
+        printf("\n./Server <xboxfd path> <portno>\n\n");
         printf("where the xboxfd path is located at /dev/input/ and the\n");
         printf("portno is the port number the connection will be made\n");
-        printf("and IP is the address of the client.\n");
         return -1;
     }
 
@@ -53,14 +69,14 @@ int main(int argc, char* argv[]) {
     drive = (double*)malloc(2 * sizeof(double));
     buttons = (int*)malloc(15 * sizeof(int));
 
-    // Vars for recv client data
-    int clientfd;
-    struct sockaddr_in client_addr;
+    string = (char*)malloc(12 * sizeof(char));
+
 
 
     printf("Performing xbox setup...\n");
-    //xbox_setup(&xboxfd, argv[1]);
+    xbox_setup(&xboxfd, argv[1]);
     printf("Completed xbox setup\n");
+
 
     // Create socket connection for sending Xbox input
     printf("\nCreating host socket...\n");
@@ -71,33 +87,14 @@ int main(int argc, char* argv[]) {
     printf("\nListening for a connection...\n");
     ListenForConn(&hostfd, &newfd, &their_addr);
 
-    usleep(2500000);
-
-    // Create a socket connection for receiving data from client
-    printf("Creating client socket...\n");
-    ClientSocket(argv[3], "8020", &clientfd, &client_addr);
-    printf("Created.\n");
-
-    printf("\nConnecting to host...\n");
-    while(1) {
-        if(ConnectToHost(&clientfd, &client_addr) == -1) {
-            perror("ERROR: Failed to connect");
-        } else break;
-    }
-    printf("Connected!\n");
-
-
 
     printf("\n\nReading input\n");
     while(1) {
-
-
-        //readInput(&xboxfd, LX, LY, drive, buttons);
-
+        readInput(&xboxfd, LX, LY, drive, buttons);
         
-        //usleep(1000);
+        usleep(1000);
 
-        //MasterSend(newfd);
+        MasterSend(newfd);
     }
     return 0;
 }
