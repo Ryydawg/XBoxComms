@@ -27,7 +27,7 @@ void MasterReceive(int fd) {
 }
 
 // Sends the data out
-void MasterSend(int fd) {}
+void MasterSend(int fd) {
     int i;
 
     inputs[0] = *drive;
