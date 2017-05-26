@@ -65,11 +65,21 @@ int main(int argc, char* argv[]) {
 	        cli.publish(TOPIC_DRIVE, PAYLOAD_DRIVE, strlen(PAYLOAD_DRIVE), 2, false);
 
 	        // Turn buttons to string
+	        /*
 	        str = "A: " + std::to_string(*buttons) + "   B: " + std::to_string(*(buttons+1))
 	        		+ "   X: " + std::to_string(*(buttons+2)) + "   Y: " + std::to_string(*(buttons+3))
 	        		+ "   LB: " + std::to_string(*(buttons+4)) + "   RB: " + std::to_string(*(buttons+5))
 	        		+ "   L: " + std::to_string(*(buttons+11)) + "   R: " + std::to_string(*(buttons+12))
 	        		+ "   UP: " + std::to_string(*(buttons+13)) + "   DOWN: " + std::to_string(*(buttons+14));
+	        		*/
+
+	        // [A], [B], [X], [Y], [LB], [RB], [L], [R], [UP], [DOWN]
+	        str = "[" + std::to_string(*buttons) + "], [" + std::to_string(*(buttons+1))
+	        		+ "], [" + std::to_string(*(buttons+2)) + "], [" + std::to_string(*(buttons+3))
+	        		+ "], [" + std::to_string(*(buttons+4)) + "], [" + std::to_string(*(buttons+5))
+	        		+ "], [" + std::to_string(*(buttons+11)) + "], [" + std::to_string(*(buttons+12))
+	        		+ "], [" + std::to_string(*(buttons+13)) + "], [" + std::to_string(*(buttons+14)) + "]";
+
 			PAYLOAD_BUTTONS = str.c_str();
 			// Publish it
 	        cli.publish(TOPIC_BUTTONS, PAYLOAD_BUTTONS, strlen(PAYLOAD_BUTTONS), 2, false);
