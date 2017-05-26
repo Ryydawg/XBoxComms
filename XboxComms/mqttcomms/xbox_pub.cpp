@@ -74,11 +74,11 @@ int main(int argc, char* argv[]) {
 	        		*/
 
 	        // [A], [B], [X], [Y], [LB], [RB], [L], [R], [UP], [DOWN]
-	        str = "[" + std::to_string(*buttons) + "], [" + std::to_string(*(buttons+1))
-	        		+ "], [" + std::to_string(*(buttons+2)) + "], [" + std::to_string(*(buttons+3))
-	        		+ "], [" + std::to_string(*(buttons+4)) + "], [" + std::to_string(*(buttons+5))
-	        		+ "], [" + std::to_string(*(buttons+11)) + "], [" + std::to_string(*(buttons+12))
-	        		+ "], [" + std::to_string(*(buttons+13)) + "], [" + std::to_string(*(buttons+14)) + "]";
+	        str = "[" + std::to_string(*buttons) + " " + std::to_string(*(buttons+1))
+	        		+ " " + std::to_string(*(buttons+2)) + " " + std::to_string(*(buttons+3))
+	        		+ " " + std::to_string(*(buttons+4)) + " " + std::to_string(*(buttons+5))
+	        		+ " " + std::to_string(*(buttons+11)) + " " + std::to_string(*(buttons+12))
+	        		+ " " + std::to_string(*(buttons+13)) + " " + std::to_string(*(buttons+14)) + "]";
 
 			PAYLOAD_BUTTONS = str.c_str();
 			// Publish it
