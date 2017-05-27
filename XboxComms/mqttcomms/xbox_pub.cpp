@@ -47,27 +47,32 @@ int main(int argc, char* argv[]) {
 
 
     cli.connect(connOpts);
+    printf("Press 'g' to start reading input or 'q' to quit. Press BACK on the controller to stop reading\n");
 	while(1) {
-		if(!start) {
-			printf("Press 'g' to start reading input or 'q' to quit. Press BACK on the controller to return here\n");
+		if(start == 0) {
 			input = std::tolower(std::cin.get());
-			if(input == 'g') start = 1;
-			else if(input == 'q') {
+			if(input == 'g') {
+				start = 1;
+				*(buttons+6) = 0;
+			} else if(input == 'q') {
 				cli.disconnect();
 				return 0;
-			} else continue;
+			} else {
+				continue;
+			}
 		}
+
 
 	    try {
 	        readInput(&xboxfd, LX, LY, drive, buttons);
-
+//#if 0
 	        inputs[0] = *(drive);
 	        inputs[1] = *(drive+1);
 	        for(int i = 2; i < 17; i++) {
 	        	inputs[i] = *(buttons+i-2);
 	        }
 	        cli.publish(TOPIC, (void*)inputs, 17*sizeof(double), 2, false);
-
+//#endif
 
 #if 0
 	        // Turn drive to string
