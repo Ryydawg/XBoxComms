@@ -10,8 +10,9 @@ extern "C" {
 
 char* PATH_TO_CONTROLLER = (char*)"/dev/input/js2";
 
-const std::string ADDRESS("tcp://192.168.7.2");
+const std::string ADDRESS("tcp://localhost");
 const std::string CLIENTID("xbox_pub");
+const std::string TOPIC("Controls");
 const std::string TOPIC_DRIVE("Drive");
 const std::string TOPIC_BUTTONS("Buttons");
 
@@ -23,6 +24,8 @@ int main(int argc, char* argv[]) {
 	double* drive = (double*)malloc(2 * sizeof(double));
 	// buttons[0-14] are xbox buttons, 15 total
     int* buttons = (int*)malloc(15 * sizeof(int));
+    double* inputs = (double*)malloc(17*sizeof(double));
+
     // for converting double to stirng
     std::string str;
     const char* PAYLOAD_DRIVE;
@@ -58,6 +61,15 @@ int main(int argc, char* argv[]) {
 	    try {
 	        readInput(&xboxfd, LX, LY, drive, buttons);
 
+	        inputs[0] = *(drive);
+	        inputs[1] = *(drive+1);
+	        for(int i = 2; i < 17; i++) {
+	        	inputs[i] = *(buttons+i-2);
+	        }
+	        cli.publish(TOPIC, (void*)inputs, 17*sizeof(double), 2, false);
+
+
+#if 0
 	        // Turn drive to string
 	        str = "Speed: " + std::to_string(*drive) + "	Angle: " + std::to_string(*(drive+1));
 	        PAYLOAD_DRIVE = str.c_str();
@@ -83,7 +95,7 @@ int main(int argc, char* argv[]) {
 			PAYLOAD_BUTTONS = str.c_str();
 			// Publish it
 	        cli.publish(TOPIC_BUTTONS, PAYLOAD_BUTTONS, strlen(PAYLOAD_BUTTONS), 2, false);
-	       
+#endif
 	        // Pause if BACK is pressed
 	        if(*(buttons+6)) {
 	        	start = 0;
