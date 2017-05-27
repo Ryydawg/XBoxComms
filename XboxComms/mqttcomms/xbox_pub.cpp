@@ -47,7 +47,7 @@ int main(int argc, char* argv[]) {
 
 
     cli.connect(connOpts);
-    printf("Press 'g' to start reading input or 'q' to quit. Press BACK on the controller to stop reading\n");
+    printf("Press 'g' to read input or BACK on the controller to stop reading. When not reading, press q to quit.\n");
 	while(1) {
 		if(start == 0) {
 			input = std::tolower(std::cin.get());
